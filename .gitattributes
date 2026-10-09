@@ -1,0 +1,4 @@
+* text=auto eol=lf
+# 아래 파일은 실행 당시 바이트(줄바꿈 포함) 기준으로 해시가 기록되어 있어 변환하지 않는다.
+protocols/availability-joint.v1.json -text
+results/availability-*/* -text

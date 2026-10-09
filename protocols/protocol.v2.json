@@ -1,0 +1,451 @@
+{
+  "schema_version": "smartfarm-state-revalidation-protocol-v1",
+  "protocol_id": "masters-thesis-state-revalidation-v2",
+  "title": "Execution-time state revalidation with selective answer-unit revision",
+  "claim_status": "not_run",
+  "protocol_status": "frozen",
+  "protocol_frozen": true,
+  "frozen_at": "2026-08-31T03:30:40Z",
+  "implementation_base_commit": "755059d73d71385c58ed9caca2e721a5d4e43785",
+  "artifact_role": "predeclared_experiment_input_fixture",
+  "fixture_notice": "이 파일의 수치, 임계값, 시드와 기대 판정은 실험 결과가 아니다. 파일럿과 본 실험 결과는 별도 산출물에 기록하며 현재 상태는 [not_run]이다.",
+  "research_scope": {
+    "primary_problem": "최초 센서 상태 조회와 최종 응답 확정 사이의 관련 상태 변화로 발생하는 응답-상태 불일치와 행동 유효성 변화",
+    "evaluated_output": "structured_state_claims_and_action_candidate",
+    "not_evaluated": [
+      "natural_language_narrative_quality",
+      "human_satisfaction",
+      "real_farm_safety",
+      "crop_productivity",
+      "physical_device_certification",
+      "strict_real_time_guarantee"
+    ],
+    "judge_policy": "no_human_or_llm_judge"
+  },
+  "input_files": {
+    "related_state_registry": "related-state.v2.json",
+    "pilot_scenario_manifest": "scenarios.v1.json",
+    "confirmatory_scenario_manifest": "scenarios.confirmatory.v1.json"
+  },
+  "conditions": [
+    {
+      "condition_id": "B0",
+      "name": "one_shot_rag",
+      "post_generation_state_read": false,
+      "answer_refresh_limit": 0,
+      "drop_action_on_relevant_change": false,
+      "execution_precondition_check": false
+    },
+    {
+      "condition_id": "B1",
+      "name": "block_action_on_change",
+      "post_generation_state_read": true,
+      "answer_refresh_limit": 0,
+      "drop_action_on_relevant_change": true,
+      "execution_precondition_check": true
+    },
+    {
+      "condition_id": "B2",
+      "name": "bounded_state_refresh",
+      "post_generation_state_read": true,
+      "answer_refresh_limit": 1,
+      "drop_action_on_relevant_change": false,
+      "execution_precondition_check": true,
+      "on_second_relevant_change": "return_latest_structured_summary_and_drop_action"
+    },
+    {
+      "condition_id": "SR",
+      "name": "selective_answer_unit_revision",
+      "post_generation_state_read": true,
+      "answer_refresh_limit": 1,
+      "drop_action_on_relevant_change": false,
+      "execution_precondition_check": true,
+      "revision_scope": "affected_answer_units_only",
+      "on_second_relevant_change": "return_latest_structured_summary_and_drop_action"
+    }
+  ],
+  "primary_contrasts": [
+    {
+      "contrast_id": "B1-B0",
+      "interpretation": "상태 변화 감지, 행동 차단과 실행 전 확인의 결합 효과"
+    },
+    {
+      "contrast_id": "B2-B1",
+      "interpretation": "답변과 행동 후보의 제한적 갱신이 추가하는 효과"
+    },
+    {
+      "contrast_id": "B2-B0",
+      "interpretation": "제안 절차 전체의 종합 효과"
+    },
+    {
+      "contrast_id": "SR-B0",
+      "interpretation": "선택적 수정 전체의 효과"
+    },
+    {
+      "contrast_id": "SR-B2",
+      "interpretation": "같은 최신성에서 전체 갱신 대신 영향 단위만 고칠 때의 생성비용 차이"
+    }
+  ],
+  "barriers": [
+    "initial_state_read",
+    "generation_started",
+    "during_initial_generation",
+    "generation_completed",
+    "post_generation_read",
+    "refresh_generation_started",
+    "during_refresh_generation",
+    "refresh_generation_completed",
+    "release_check",
+    "approval_event",
+    "execution_check",
+    "action_apply"
+  ],
+  "required_trace_order_by_condition": {
+    "B0": [
+      "initial_state_read",
+      "generation_started",
+      "during_initial_generation",
+      "generation_completed",
+      "release_check"
+    ],
+    "B1": [
+      "initial_state_read",
+      "generation_started",
+      "during_initial_generation",
+      "generation_completed",
+      "post_generation_read",
+      "release_check"
+    ],
+    "B2": [
+      "initial_state_read",
+      "generation_started",
+      "during_initial_generation",
+      "generation_completed",
+      "post_generation_read",
+      "release_check"
+    ]
+  },
+  "timing_rule": {
+    "ordering_clock": "logical_event_sequence",
+    "wall_clock": "monotonic_ns_for_integration_latency_only",
+    "valid_initial_generation_injection": "generation_started < injection_applied < generation_completed",
+    "invalid_timing_outcome": "protocol_violation"
+  },
+  "related_state_rule": {
+    "declared_before_generation": true,
+    "source": "scenario.required_state_keys",
+    "must_match_registry_profile": true,
+    "fingerprint": {
+      "serialization": "canonical_json_sorted_keys_utf8",
+      "algorithm": "sha256",
+      "include_fields": [
+        "state_key",
+        "value",
+        "declared_unit"
+      ],
+      "quality_handling": "predeclared_sensor_health_and_availability_state_keys",
+      "freshness_handling": "predeclared_sample_age_state_key",
+      "global_state_revision_handling": "trace_only_not_related_state_fingerprint",
+      "reason": "무관한 상태 변경으로 증가한 전역 revision이 관련 상태 변화로 오인되는 것을 방지한다."
+    }
+  },
+  "generator_contract": {
+    "same_question_evidence_initial_state_and_seed_across_conditions": true,
+    "structured_output_required": true,
+    "invalid_structured_output": "generation_failure",
+    "output_fields": {
+      "state_claims": [
+        "key",
+        "value",
+        "unit",
+        "observed_revision"
+      ],
+      "action_candidate": [
+        "action",
+        "target",
+        "value",
+        "bound_state_revision",
+        "preconditions"
+      ],
+      "narrative": "stored_but_not_scored"
+    },
+    "primary_generator": "deterministic_fixture_generator",
+    "integration_generator": "TBD_after_core_validation"
+  },
+  "approval_boundary": {
+    "human_participant": false,
+    "policy": "approve_if_candidate_is_present",
+    "same_for_all_conditions": true,
+    "approval_is_not_an_evaluation_variable": true
+  },
+  "oracle": {
+    "truth_source": "scenario.release_truth_and_action_contract",
+    "response_state_consistency": {
+      "success": "all_required_state_keys_present_once_with_correct_unit_and_release_truth_value",
+      "numeric_rule": "related_state_registry_tolerance",
+      "categorical_rule": "exact",
+      "missing_or_duplicate_required_claim": "failure",
+      "stale_observed_revision": "failure_only_when_per_field_revision_is_available_and_enforced",
+      "global_revision_mismatch": "trace_diagnostic_not_a_failure"
+    },
+    "action_validity": {
+      "evaluation_time": "execution_check",
+      "source": "scenario.action_contract.execution_preconditions",
+      "predicate_evaluation": "deterministic_all_true",
+      "actual_side_effect_source": "dry_run_executor_trace"
+    },
+    "zero_denominator": {
+      "estimate": null,
+      "status": "not_applicable",
+      "must_not_substitute_zero": true
+    }
+  },
+  "metrics": [
+    {
+      "metric_id": "response_state_consistency",
+      "role": "primary",
+      "numerator": "episodes_with_all_required_claims_matching_release_truth",
+      "denominator": "evaluable_episodes"
+    },
+    {
+      "metric_id": "invalid_action_execution_rate",
+      "role": "primary",
+      "numerator": "invalid_action_opportunity_episodes_with_side_effect_applied",
+      "denominator": "episodes_declared_invalid_action_opportunity"
+    },
+    {
+      "metric_id": "valid_action_retention",
+      "role": "primary_defense",
+      "numerator": "valid_action_opportunity_episodes_with_valid_candidate_retained",
+      "denominator": "episodes_declared_valid_action_opportunity"
+    },
+    {
+      "metric_id": "required_field_agreement_rate",
+      "role": "diagnostic",
+      "numerator": "correct_required_state_claims",
+      "denominator": "all_required_state_claims"
+    },
+    {
+      "metric_id": "unnecessary_refresh_rate",
+      "role": "diagnostic",
+      "numerator": "none_unrelated_or_noise_episodes_with_refresh",
+      "denominator": "none_unrelated_or_noise_episodes"
+    },
+    {
+      "metric_id": "second_change_bounded_termination_rate",
+      "role": "diagnostic",
+      "numerator": "second_change_episodes_with_at_most_two_generations_and_no_action",
+      "denominator": "second_change_episodes"
+    },
+    {
+      "metric_id": "response_latency_ms",
+      "role": "deferred_not_claimed",
+      "status": "not_run",
+      "summaries": [
+        "median",
+        "iqr",
+        "p95"
+      ]
+    },
+    {
+      "metric_id": "llm_calls_tokens_and_cost",
+      "role": "deferred_not_claimed",
+      "status": "not_run",
+      "missing_usage_policy": "not_available_not_zero"
+    },
+    {
+      "metric_id": "preserved_unit_ratio",
+      "role": "primary_efficiency",
+      "numerator": "preserved_answer_units_in_refreshed_episodes",
+      "denominator": "declared_answer_units_in_refreshed_episodes"
+    },
+    {
+      "metric_id": "unit_generation_count",
+      "role": "primary_efficiency",
+      "definition": "answer_units_generated_across_initial_and_refresh_generation",
+      "note": "결정론적 환경에서 재는 구조적 생성비용이며 실제 토큰 비용이 아니다."
+    },
+    {
+      "metric_id": "revision_precision",
+      "role": "diagnostic",
+      "numerator": "revised_units_that_the_oracle_marks_as_affected",
+      "denominator": "revised_units"
+    },
+    {
+      "metric_id": "revision_recall",
+      "role": "diagnostic",
+      "numerator": "oracle_affected_units_that_were_revised",
+      "denominator": "oracle_affected_units"
+    }
+  ],
+  "claim_scope": {
+    "evaluated_system": "deterministic_post_generation_revalidation_module",
+    "claimed_metrics": [
+      "response_state_consistency",
+      "invalid_action_execution_rate",
+      "valid_action_retention",
+      "unnecessary_refresh_rate",
+      "second_change_bounded_termination_rate",
+      "preserved_unit_ratio",
+      "unit_generation_count",
+      "revision_precision",
+      "revision_recall"
+    ],
+    "not_claimed_metrics": [
+      "response_latency_ms",
+      "llm_calls_tokens_and_cost",
+      "natural_language_quality",
+      "real_farm_effect"
+    ],
+    "interpretation_limit": "controlled_simulated_scenario_suite_only",
+    "cost_interpretation": "unit_generation_count_is_a_structural_proxy_not_token_cost"
+  },
+  "sampling_and_statistics": {
+    "experimental_unit": "unique_scenario_instance",
+    "paired_key": "pair_id",
+    "pair_conditions": [
+      "B0",
+      "B1",
+      "B2",
+      "SR"
+    ],
+    "condition_order": "blocked_randomized_after_protocol_freeze",
+    "identical_seed_repetition_is_not_independent": true,
+    "pilot_status": "PILOT_ONLY_COMPLETED",
+    "heldout_status_before_run": "not_run",
+    "rate_interval": "wilson_95_percent",
+    "paired_effect_interval": "paired_bootstrap_95_percent",
+    "paired_binary_secondary_test": "exact_mcnemar",
+    "zero_event_reporting": "estimate_plus_one_sided_exact_95_percent_upper_bound",
+    "latency_interval": "episode_bootstrap_95_percent",
+    "repeat_count": 1,
+    "confirmatory_scenario_count": 120,
+    "primary_scenario_count": 110,
+    "diagnostic_scenario_count": 10
+  },
+  "pilot_gate": {
+    "status": "passed",
+    "run_id": "pilot-v2-20260831-755059d",
+    "repository_commit": "755059d73d71385c58ed9caca2e721a5d4e43785",
+    "run_manifest_sha256": "af42dfe8ec2ab99062e854896495fe3533672ebf9f66e3499612630c3f68068c",
+    "purpose": "contract_and_denominator_validation_only",
+    "claim_status": "PILOT_ONLY",
+    "protocol_error_count": 0,
+    "artifact_reaggregation": "ok"
+  },
+  "frozen_inputs": {
+    "scenario_sha256": "012e41470ab542fbdd35441258a9b4973f49531c6984c18cab9c4e1e1e74f1cc",
+    "related_state_sha256": "a1c015f0efd9c2cefaca4cf1646960f1f55f3388a8c9057b6aaf0564f24eed08",
+    "generator_sha256": "f664bac5bc066e49f5414b31252a6450089705b9cb5380b2ea9664d3e4723622",
+    "template_scenario_sha256": "1bf3c0ed4de2177cc40461d09f70966d70ebbb7b420c7456f934c17854359ec7",
+    "hash_serialization": "canonical_json_sorted_keys_utf8",
+    "generator_hash_normalization": "utf8_lf",
+    "scenario_count": 120,
+    "primary_scenario_count": 110,
+    "diagnostic_scenario_count": 10
+  },
+  "artifact_contract": {
+    "raw_events": "trace.jsonl",
+    "episode_records": "episodes.jsonl",
+    "aggregate_metrics": "metrics.csv",
+    "paired_effects": "paired-effects.csv",
+    "artifact_index": "artifact-hashes.json",
+    "claim_ledger": "claim-ledger.csv",
+    "required_run_identity": [
+      "repository_commit",
+      "protocol_sha256",
+      "scenario_sha256",
+      "related_state_sha256",
+      "prompt_sha256",
+      "run_timestamp_utc",
+      "runtime_versions"
+    ],
+    "hash_algorithm": "sha256",
+    "raw_artifact_claim_status_before_execution": "not_run"
+  },
+  "isolation_guards": {
+    "allowed_data_modes": [
+      "simulated",
+      "fixture"
+    ],
+    "forbidden_data_modes": [
+      "real",
+      "mixed",
+      "live"
+    ],
+    "default_backend": "in_memory",
+    "physical_device_calls": "forbidden",
+    "product_runtime_imports_research_module": false,
+    "default_compose_project_must_not_be_used": true,
+    "product_ports_and_volumes_must_not_be_changed": true
+  },
+  "gates": [
+    {
+      "gate_id": "G0-input-contract",
+      "required_before": "implementation",
+      "criteria": [
+        "all_protocol_files_parse",
+        "all_scenarios_are_not_run_fixtures",
+        "all_state_keys_exist_in_registry",
+        "all_injection_barriers_exist"
+      ]
+    },
+    {
+      "gate_id": "G1-deterministic-core",
+      "required_before": "pilot",
+      "criteria": [
+        "same_input_reproduces_same_logical_trace_hash",
+        "barrier_order_is_verified",
+        "B0_B1_B2_policy_tests_pass",
+        "oracle_reaggregation_matches_episode_records"
+      ]
+    },
+    {
+      "gate_id": "G2-pilot",
+      "required_before": "protocol_freeze",
+      "criteria": [
+        "pilot_outputs_marked_PILOT_ONLY",
+        "denominators_and_failure_codes_are_non_ambiguous",
+        "sensor_tolerances_and_repeat_count_are_fixed"
+      ]
+    },
+    {
+      "gate_id": "G3-freeze",
+      "required_before": "heldout_run",
+      "criteria": [
+        "protocol_frozen_true",
+        "protocol_and_input_hashes_recorded",
+        "heldout_scenarios_sealed",
+        "statistics_plan_locked"
+      ]
+    },
+    {
+      "gate_id": "G4-heldout-evidence",
+      "required_before": "manuscript_results",
+      "criteria": [
+        "raw_artifacts_immutable_and_hash_verified",
+        "metrics_recreated_from_raw_events",
+        "all_table_cells_linked_in_claim_ledger",
+        "zero_events_include_confidence_upper_bound"
+      ]
+    }
+  ],
+  "derived_from": "masters-thesis-state-revalidation-v1",
+  "answer_unit_rule": {
+    "declaration_source": "related_state_dependency_profile",
+    "must_not_depend_on": [
+      "generated_answer",
+      "generated_state_claims",
+      "baseline_condition"
+    ],
+    "coverage": "every_required_state_key_belongs_to_exactly_one_declared_unit",
+    "affected_unit_rule": "a_unit_is_affected_when_any_key_it_depends_on_has_a_relevant_change",
+    "preserved_unit_rule": "a_preserved_unit_keeps_its_original_observation_revision",
+    "refresh_exhausted_rule": "budget_exhaustion_rebuilds_every_unit_and_drops_the_action"
+  },
+  "scenario_suite_source": {
+    "path": "protocols/scenarios.confirmatory.v1.json",
+    "reason": "v1 과 동일한 확정 시나리오를 사용해 두 결과를 직접 비교할 수 있게 한다.",
+    "sr_targeted_scenarios": "not_included_deferred_to_a_later_suite"
+  }
+}

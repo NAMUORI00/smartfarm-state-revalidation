@@ -1,0 +1,38 @@
+{
+  "protocol_id": "availability-followup-v1",
+  "source_design": "private design notes (identifier redacted in public copy)",
+  "source_pages": [15, 16, 17],
+  "scope": "Existing SR research core, without remediation; deterministic structured-output conformance, not LLM or deployed-product evaluation",
+  "question": "현재 근권 온도와 냉각 조정안을 확인하고, 유효한 팬 25% 조정안을 유지해줘.",
+  "evidence": ["시험 기준: 근권 온도 18°C 초과 시 냉각 검토", "시험 기준: 습도 80% 초과 시 팬 조정 검토"],
+  "conditions": [
+    {"id": "normal", "label": "온도 정상 조회", "expected_temperature": 19.0, "cooling": "allow", "fan": "retain", "primary": true},
+    {"id": "persistent_missing", "label": "처음부터 온도 값 없음", "expected_temperature": null, "cooling": "hold_with_reason", "fan": "retain", "primary": true},
+    {"id": "temperature_read_error", "label": "온도 재조회 오류", "expected_temperature": null, "cooling": "hold_with_reason", "fan": "retain", "primary": true},
+    {"id": "whole_snapshot_error", "label": "전체 상태 재조회 오류", "expected_temperature": null, "cooling": "hold_with_reason", "fan": "hold_with_reason", "primary": false}
+  ],
+  "variants": [
+    {"id": "v01", "initial_fan_percent": 0, "sample_age_seconds": 10},
+    {"id": "v02", "initial_fan_percent": 1, "sample_age_seconds": 11},
+    {"id": "v03", "initial_fan_percent": 2, "sample_age_seconds": 12},
+    {"id": "v04", "initial_fan_percent": 3, "sample_age_seconds": 13},
+    {"id": "v05", "initial_fan_percent": 4, "sample_age_seconds": 14},
+    {"id": "v06", "initial_fan_percent": 5, "sample_age_seconds": 15},
+    {"id": "v07", "initial_fan_percent": 6, "sample_age_seconds": 16},
+    {"id": "v08", "initial_fan_percent": 7, "sample_age_seconds": 17},
+    {"id": "v09", "initial_fan_percent": 8, "sample_age_seconds": 18},
+    {"id": "v10", "initial_fan_percent": 9, "sample_age_seconds": 19}
+  ],
+  "fault_schedule": "Second StateReader.read call, before release; error persists on subsequent reads. A temperature-source exception propagates through the current all-or-nothing snapshot interface.",
+  "probe_design": "Two independent existing-engine runs per case: cooling profile and fan profile. Aggregate A from cooling response, C from cooling execution, F from fan execution. This is not a joint multi-action transaction.",
+  "oracle": {
+    "A": "Completed run; normal: released temperature claim equals 19, correct unit and source revision, acquisition timestamp retained. Missing/error: no numeric temperature asserted as current and explicit unavailable notice; if historical value is shown, historical label and timestamp required.",
+    "C": "Normal: cooling candidate true and valid dry-run application. Missing/error: no application and explicit unavailable/missing/read-error hold reason. Generic no_action alone is insufficient.",
+    "F": "Temperature-only conditions: fan candidate 25 and valid dry-run application under its independent conditions. Whole snapshot failure: explicit hold reason and no application.",
+    "S": "A*C*F; any unhandled exception makes the case fail. Exceptions remain in the denominator.",
+    "unavailable_text_markers": ["현재 온도 확인 불가", "현재 온도를 확인할 수 없", "온도 값을 확인할 수 없"],
+    "hold_reason_codes": ["required_value_missing", "temperature_read_error", "snapshot_unavailable"],
+    "rate": "100 * passed / all predeclared cases in each condition",
+    "inference": "Finite deterministic fixture coverage only; no population confidence interval, no LLM quality, token, latency, field-safety or before/after improvement claim. Three replay checks do not increase N."
+  }
+}

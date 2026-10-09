@@ -1,0 +1,437 @@
+{
+  "schema_version": "smartfarm-state-revalidation-result-index-v1",
+  "result_id": "confirmatory-v2",
+  "supersedes": null,
+  "extends": "confirmatory-v1",
+  "claim_status": "claim_candidate",
+  "evidence_scope": "controlled_simulated_scenario_suite_only",
+  "run": {
+    "run_id": "confirmatory-v2-20260831-61024aa",
+    "run_started_at": "2026-08-31T03:31:12+00:00",
+    "repository_commit": "61024aaac79162ae82371c32110f66949c20e19b",
+    "branch": "main",
+    "runtime": {
+      "package": "smartfarm-state-revalidation-0.1.0",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.14.4"
+    },
+    "scenario_count": 120,
+    "primary_scenario_count": 110,
+    "diagnostic_scenario_count": 10,
+    "episode_result_count": 460,
+    "condition_ids": [
+      "B0",
+      "B1",
+      "B2",
+      "SR"
+    ],
+    "bootstrap_seed": 20260807,
+    "bootstrap_resamples": 10000
+  },
+  "inputs": {
+    "protocol_sha256": "40fa7d870747cad847303c1be82e5b291c7d3d4697f54b5ecd4bf70e79297c29",
+    "scenario_sha256": "012e41470ab542fbdd35441258a9b4973f49531c6984c18cab9c4e1e1e74f1cc",
+    "related_state_sha256": "a1c015f0efd9c2cefaca4cf1646960f1f55f3388a8c9057b6aaf0564f24eed08",
+    "prompt_sha256": "0496bcd0b436188d3abc4dfe6f32486637fd7004846b5ab697add951c2ddf24f",
+    "observation_input_sha256": "61a61a68473b50802789d5facc92c84e6066d749e8c8dc4604eeaae44d3f0865",
+    "scenario_suite_shared_with": "confirmatory-v1"
+  },
+  "integrity": {
+    "run_manifest_sha256": "7c1619c62f19f8c1d69b00ad3490c4e4eee4acfa9279ba140b073acff9c183a2",
+    "protocol_bundle_sha256": "6b0281040fc87a64bc058644fcaf603276f528e657d7536106753c15679acfee",
+    "episodes_jsonl_sha256": "a77a775f14525eda9d3eb1017b29fc3308f1e5e741fdf6a7e93d328ac7485fab",
+    "trace_jsonl_sha256": "1a767cb25a0270cf65e15471cb2a6d4a4cf9aaae32a713b8f0f03e804cc15673",
+    "summary_sha256": "9f602778ee0bedf303089e04db9e95360215980306c6c10ae4fa7e9d43c7fcf2",
+    "statistics_sha256": "6d4311fd9d61b60bb03c8d3ecbbab35da88c5306c755ba9d89ae8a84cd84da8e",
+    "claim_ledger_sha256": "0477377e0235c7254ac89ce6de8c5a233421b35770a76e66250a66c045bb1376",
+    "artifact_hash_verification": "ok",
+    "summary_reaggregation": "ok",
+    "statistics_reaggregation": "ok",
+    "protocol_error_count": 0,
+    "oracle_state_mismatch_count": 0
+  },
+  "primary_metrics": {
+    "B0": {
+      "response_state_consistency": {
+        "numerator": 50,
+        "denominator": 110,
+        "value": 0.45454545454545453,
+        "wilson_95": [
+          0.3645991214526059,
+          0.5475594181199545
+        ]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 80,
+        "denominator": 80,
+        "value": 1.0,
+        "wilson_95": [
+          0.954181870464473,
+          1.0
+        ]
+      },
+      "valid_action_retention": {
+        "numerator": 30,
+        "denominator": 50,
+        "value": 0.6,
+        "wilson_95": [
+          0.46181437747589366,
+          0.7239161026974346
+        ]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 50,
+          "upper": 0.058155079116972264
+        }
+      },
+      "unit_generation_count": {
+        "episodes": 110,
+        "mean": 4.0,
+        "median": 4.0,
+        "p95": 4.0,
+        "unit": "answer_units"
+      }
+    },
+    "B1": {
+      "response_state_consistency": {
+        "numerator": 50,
+        "denominator": 110,
+        "value": 0.45454545454545453,
+        "wilson_95": [
+          0.3645991214526059,
+          0.5475594181199545
+        ]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 0,
+        "denominator": 80,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 80,
+          "upper": 0.036754197779982345
+        }
+      },
+      "valid_action_retention": {
+        "numerator": 30,
+        "denominator": 50,
+        "value": 0.6,
+        "wilson_95": [
+          0.46181437747589366,
+          0.7239161026974346
+        ]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 50,
+          "upper": 0.058155079116972264
+        }
+      },
+      "unit_generation_count": {
+        "episodes": 110,
+        "mean": 4.0,
+        "median": 4.0,
+        "p95": 4.0,
+        "unit": "answer_units"
+      }
+    },
+    "B2": {
+      "response_state_consistency": {
+        "numerator": 110,
+        "denominator": 110,
+        "value": 1.0,
+        "wilson_95": [
+          0.966256064701836,
+          1.0
+        ]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 0,
+        "denominator": 80,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 80,
+          "upper": 0.036754197779982345
+        }
+      },
+      "valid_action_retention": {
+        "numerator": 50,
+        "denominator": 50,
+        "value": 1.0,
+        "wilson_95": [
+          0.9286524008666414,
+          1.0
+        ]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 50,
+          "upper": 0.058155079116972264
+        }
+      },
+      "unit_generation_count": {
+        "episodes": 110,
+        "mean": 6.181818181818182,
+        "median": 8.0,
+        "p95": 8.0,
+        "unit": "answer_units"
+      },
+      "preserved_unit_ratio": {
+        "numerator": 0,
+        "denominator": 240,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 240,
+          "upper": 0.012404638050409034
+        }
+      },
+      "revision_precision": {
+        "numerator": 60,
+        "denominator": 240,
+        "value": 0.25,
+        "wilson_95": [
+          0.19944653917174654,
+          0.3084304207990329
+        ]
+      },
+      "revision_recall": {
+        "numerator": 60,
+        "denominator": 60,
+        "value": 1.0,
+        "wilson_95": [
+          0.93982814785791,
+          0.9999999999999998
+        ]
+      }
+    },
+    "SR": {
+      "response_state_consistency": {
+        "numerator": 110,
+        "denominator": 110,
+        "value": 1.0,
+        "wilson_95": [
+          0.966256064701836,
+          1.0
+        ]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 0,
+        "denominator": 80,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 80,
+          "upper": 0.036754197779982345
+        }
+      },
+      "valid_action_retention": {
+        "numerator": 50,
+        "denominator": 50,
+        "value": 1.0,
+        "wilson_95": [
+          0.9286524008666414,
+          1.0
+        ]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": {
+          "confidence": 0.95,
+          "method": "exact_binomial_zero_event_upper",
+          "status": "ok",
+          "trials": 50,
+          "upper": 0.058155079116972264
+        }
+      },
+      "unit_generation_count": {
+        "episodes": 110,
+        "mean": 4.545454545454546,
+        "median": 5.0,
+        "p95": 5.0,
+        "unit": "answer_units"
+      },
+      "preserved_unit_ratio": {
+        "numerator": 180,
+        "denominator": 240,
+        "value": 0.75,
+        "wilson_95": [
+          0.6915695792009672,
+          0.8005534608282535
+        ]
+      },
+      "revision_precision": {
+        "numerator": 60,
+        "denominator": 60,
+        "value": 1.0,
+        "wilson_95": [
+          0.93982814785791,
+          0.9999999999999998
+        ]
+      },
+      "revision_recall": {
+        "numerator": 60,
+        "denominator": 60,
+        "value": 1.0,
+        "wilson_95": [
+          0.93982814785791,
+          0.9999999999999998
+        ]
+      }
+    }
+  },
+  "diagnostic_metrics": {
+    "second_change_bounded_termination_rate": {
+      "numerator": 20,
+      "denominator": 20,
+      "value": 1.0,
+      "wilson_95": [
+        0.8388748419471808,
+        1.0
+      ]
+    }
+  },
+  "paired_effects": {
+    "SR_minus_B0_response_state_consistency": {
+      "paired_count": 110,
+      "difference": 0.5454545454545454,
+      "paired_bootstrap_95": [
+        0.45454545454545453,
+        0.6363636363636364
+      ],
+      "higher_is_better": true,
+      "exact_mcnemar_p_two_sided": 1.734723475976807e-18
+    },
+    "SR_minus_B0_valid_action_retention": {
+      "paired_count": 50,
+      "difference": 0.4,
+      "paired_bootstrap_95": [
+        0.26,
+        0.54
+      ],
+      "higher_is_better": true,
+      "exact_mcnemar_p_two_sided": 1.9073486328125e-06
+    },
+    "SR_minus_B0_invalid_action_execution": {
+      "paired_count": 80,
+      "difference": -1.0,
+      "paired_bootstrap_95": [
+        -1.0,
+        -1.0
+      ],
+      "higher_is_better": false,
+      "exact_mcnemar_p_two_sided": 1.6543612251060553e-24
+    },
+    "SR_minus_B2_response_state_consistency": {
+      "paired_count": 110,
+      "difference": 0.0,
+      "paired_bootstrap_95": [
+        0.0,
+        0.0
+      ],
+      "higher_is_better": true,
+      "exact_mcnemar_p_two_sided": 1.0
+    },
+    "SR_minus_B2_valid_action_retention": {
+      "paired_count": 50,
+      "difference": 0.0,
+      "paired_bootstrap_95": [
+        0.0,
+        0.0
+      ],
+      "higher_is_better": true,
+      "exact_mcnemar_p_two_sided": 1.0
+    },
+    "SR_minus_B2_invalid_action_execution": {
+      "paired_count": 80,
+      "difference": 0.0,
+      "paired_bootstrap_95": [
+        0.0,
+        0.0
+      ],
+      "higher_is_better": false,
+      "exact_mcnemar_p_two_sided": 1.0
+    },
+    "SR_minus_B2_unit_generation_count": {
+      "paired_count": 110,
+      "difference": -1.6363636363636365,
+      "paired_bootstrap_95": [
+        -1.9090909090909092,
+        -1.3636363636363635
+      ],
+      "higher_is_better": false,
+      "exact_mcnemar": "not_applicable"
+    },
+    "B2_minus_B0_unit_generation_count": {
+      "paired_count": 110,
+      "difference": 2.1818181818181817,
+      "paired_bootstrap_95": [
+        1.8181818181818181,
+        2.5454545454545454
+      ],
+      "higher_is_better": false,
+      "exact_mcnemar": "not_applicable"
+    },
+    "SR_minus_B0_unit_generation_count": {
+      "paired_count": 110,
+      "difference": 0.5454545454545454,
+      "paired_bootstrap_95": [
+        0.45454545454545453,
+        0.6363636363636364
+      ],
+      "higher_is_better": false,
+      "exact_mcnemar": "not_applicable"
+    }
+  },
+  "interpretation_ko": [
+    "SR 은 응답 일치율, 유효 행동 유지율, 무효 행동 차단에서 B2 와 같은 값을 냈고 짝 차이의 95% 구간이 모두 0 을 포함한 채 0 에 붙었다.",
+    "같은 정확성에서 SR 의 에피소드당 생성 답변 단위는 B2 보다 적었고 짝 차이의 95% 구간은 0 을 포함하지 않았다.",
+    "B0 대비 추가 생성 단위는 B2 보다 SR 이 작아, 갱신에 드는 구조적 생성비용이 줄었다.",
+    "SR 은 수정한 단위가 모두 오라클이 영향받았다고 판정한 단위였고, B2 는 영향받지 않은 단위까지 다시 생성했다.",
+    "두 번째 상태 변화 시나리오에서는 두 조건 모두 생성 호출을 제한 안에서 끝내고 행동 후보를 제거했다."
+  ],
+  "not_claimed": [
+    "actual_llm_or_rag_natural_language_quality",
+    "response_latency",
+    "llm_calls_tokens_and_cost",
+    "real_farm_safety_or_productivity",
+    "physical_device_effect",
+    "population_level_generalization"
+  ],
+  "cost_interpretation": "unit_generation_count_is_a_structural_proxy_not_token_cost",
+  "preclaim_audit_disclosure": {
+    "prior_nonclaim_execution_observed": true,
+    "details": "프로토콜 동결 뒤 b20d1f5에서 자동 감사 과정이 claim_status=not_claimed로 확정 입력을 임시 실행했다. 임시 artifact는 보존되지 않았다. 이후 시나리오 값·표본·oracle·실행 알고리즘은 변경하지 않고 운영체제 독립 해시 직렬화와 지표 식별자 정렬만 수정했다.",
+    "interpretation_limit": "공식 실행은 동결 코드와 입력의 재현 가능한 claim-candidate 실행이지만 외부 블라인드 held-out 평가로 표현하지 않는다."
+  }
+}

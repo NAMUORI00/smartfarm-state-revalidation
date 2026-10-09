@@ -1,0 +1,826 @@
+{
+  "protocol_id": "availability-joint-v1",
+  "design_status": "prospective_followup_after_exploratory_diagnosis_not_blind_confirmatory",
+  "policies": [
+    "legacy",
+    "guarded"
+  ],
+  "comparison": "Common joint orchestration; only availability handling differs. Legacy is a compatibility reference, not the unchanged historical engine.",
+  "source_design": "private design notes, pages 15-17 (identifier redacted in public copy)",
+  "scope": "Deterministic field availability and joint dry-run action decisions; no LLM, network, device or farm claims.",
+  "fixed_inputs": {
+    "root_temperature_c": 19.0,
+    "relative_humidity_pct": 85.0,
+    "cooler_enabled": false,
+    "fan_percent": 0.0,
+    "fan_proposal": 25.0,
+    "cooling_threshold_exclusive": 18.0,
+    "humidity_threshold_exclusive": 80.0,
+    "max_age_seconds_inclusive": 120.0,
+    "default_field_age_seconds": 10.0,
+    "permissions": true,
+    "alerts": true
+  },
+  "stage_times_seconds": {
+    "initial": 0,
+    "release": 1,
+    "execution": 2
+  },
+  "case_construction": "Named equivalence partitions and boundary values; no nuisance repetitions and no population confidence intervals.",
+  "approval": "Same fixture approval event after release for both policies. Held proposals never resurrect at execution without a new approval.",
+  "metrics": {
+    "A": "Released root-temperature value, availability, and timestamp/history agree with independent expected input state at release.",
+    "C": "Final cooling target, value, application and hold reason match predeclared expected result.",
+    "F": "Final fan target, 25% value, application and hold reason match expected independent conditions.",
+    "S": "A*C*F for ONE joint response/run; all exceptions remain in N.",
+    "effect": "Paired count of fail-to-pass, pass-to-fail, unchanged over named test cases; not population inference."
+  },
+  "cases": [
+    {
+      "id": "normal",
+      "label": "정상 조회",
+      "category": "normal",
+      "stages": {},
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "threshold_below",
+      "label": "냉각 경계 17.9°C",
+      "category": "temperature_boundary",
+      "stages": {
+        "initial": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 17.9
+          }
+        },
+        "release": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 17.9
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 17.9
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 17.9
+        },
+        "cooling": {
+          "status": "not_needed",
+          "reason": "condition_not_met",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "threshold_equal",
+      "label": "냉각 경계 18.0°C",
+      "category": "temperature_boundary",
+      "stages": {
+        "initial": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.0
+          }
+        },
+        "release": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.0
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.0
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 18.0
+        },
+        "cooling": {
+          "status": "not_needed",
+          "reason": "condition_not_met",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "threshold_above",
+      "label": "냉각 경계 18.1°C",
+      "category": "temperature_boundary",
+      "stages": {
+        "initial": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.1
+          }
+        },
+        "release": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.1
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 18.1
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 18.1
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "missing_initial",
+      "label": "온도 값 없음: initial",
+      "category": "missing",
+      "stages": {
+        "initial": {
+          "missing": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "release": {
+          "missing": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "execution": {
+          "missing": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "missing",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "field_error_initial",
+      "label": "온도 조회 오류: initial",
+      "category": "field_error",
+      "stages": {
+        "initial": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "release": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "execution": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "snapshot_error_initial",
+      "label": "전체 조회 오류: initial",
+      "category": "snapshot_error",
+      "stages": {
+        "initial": {
+          "snapshot_error": true
+        },
+        "release": {
+          "snapshot_error": true
+        },
+        "execution": {
+          "snapshot_error": true
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "missing_release",
+      "label": "온도 값 없음: release",
+      "category": "missing",
+      "stages": {
+        "release": {
+          "missing": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "execution": {
+          "missing": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "missing",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "field_error_release",
+      "label": "온도 조회 오류: release",
+      "category": "field_error",
+      "stages": {
+        "release": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        "execution": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "snapshot_error_release",
+      "label": "전체 조회 오류: release",
+      "category": "snapshot_error",
+      "stages": {
+        "release": {
+          "snapshot_error": true
+        },
+        "execution": {
+          "snapshot_error": true
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "field_error_then_recovery",
+      "label": "공개 전 오류 뒤 회복: 냉각 자동 재개 안 함",
+      "category": "recovery",
+      "stages": {
+        "release": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "initial_error_then_recovery",
+      "label": "최초 오류 뒤 공개 전 회복",
+      "category": "recovery",
+      "stages": {
+        "initial": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "execution_field_error",
+      "label": "실행 직전 온도 오류",
+      "category": "execution_fault",
+      "stages": {
+        "execution": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "execution_snapshot_error",
+      "label": "실행 직전 전체 조회 오류",
+      "category": "execution_fault",
+      "stages": {
+        "execution": {
+          "snapshot_error": true
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "snapshot_unavailable",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "age_below",
+      "label": "온도 관측 나이 119.9초",
+      "category": "freshness_boundary",
+      "stages": {
+        "release": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 119.9
+          }
+        },
+        "execution": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 119.9
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "age_equal",
+      "label": "온도 관측 나이 120.0초",
+      "category": "freshness_boundary",
+      "stages": {
+        "release": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 120.0
+          }
+        },
+        "execution": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 120.0
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "age_above",
+      "label": "온도 관측 나이 120.1초",
+      "category": "freshness_boundary",
+      "stages": {
+        "release": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 120.1
+          }
+        },
+        "execution": {
+          "ages": {
+            "sensor.zone-a.root_zone_temperature_c": 120.1
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "stale",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "humidity_equal",
+      "label": "팬 조건 습도 80.0%",
+      "category": "fan_boundary",
+      "stages": {
+        "initial": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.0
+          }
+        },
+        "release": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.0
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.0
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "not_needed",
+          "reason": "condition_not_met",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "humidity_above",
+      "label": "팬 조건 습도 80.1%",
+      "category": "fan_boundary",
+      "stages": {
+        "initial": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.1
+          }
+        },
+        "release": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.1
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.relative_humidity_pct": 80.1
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    },
+    {
+      "id": "fan_permission_release",
+      "label": "팬 권한 없음: release",
+      "category": "permission",
+      "stages": {
+        "release": {
+          "values": {
+            "permission.zone-a.circulation_fan": false
+          }
+        },
+        "execution": {
+          "values": {
+            "permission.zone-a.circulation_fan": false
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "permission_denied",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "fan_permission_execution",
+      "label": "팬 권한 없음: execution",
+      "category": "permission",
+      "stages": {
+        "execution": {
+          "values": {
+            "permission.zone-a.circulation_fan": false
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "permission_denied",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "fan_field_error",
+      "label": "습도만 조회 오류",
+      "category": "isolation",
+      "stages": {
+        "release": {
+          "errors": [
+            "sensor.zone-a.relative_humidity_pct"
+          ]
+        },
+        "execution": {
+          "errors": [
+            "sensor.zone-a.relative_humidity_pct"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 19.0
+        },
+        "cooling": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "both_fields_error",
+      "label": "온도·습도 동시 조회 오류",
+      "category": "isolation",
+      "stages": {
+        "release": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c",
+            "sensor.zone-a.relative_humidity_pct"
+          ]
+        },
+        "execution": {
+          "errors": [
+            "sensor.zone-a.root_zone_temperature_c",
+            "sensor.zone-a.relative_humidity_pct"
+          ]
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "unavailable",
+          "value": null
+        },
+        "cooling": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        },
+        "fan": {
+          "status": "hold",
+          "reason": "read_error",
+          "applied": false
+        }
+      }
+    },
+    {
+      "id": "temperature_drops",
+      "label": "공개 전 온도19→17.9°C",
+      "category": "state_change",
+      "stages": {
+        "release": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 17.9
+          }
+        },
+        "execution": {
+          "values": {
+            "sensor.zone-a.root_zone_temperature_c": 17.9
+          }
+        }
+      },
+      "expected": {
+        "answer": {
+          "status": "current",
+          "value": 17.9
+        },
+        "cooling": {
+          "status": "not_needed",
+          "reason": "condition_not_met",
+          "applied": false
+        },
+        "fan": {
+          "status": "applied",
+          "reason": null,
+          "applied": true
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "N": 24,
+  "historical_compatibility": [
+    {
+      "agreed": true,
+      "case_id": "normal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "normal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_below",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_below",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_equal",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_equal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_above",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "threshold_above",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "missing_initial",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "missing_initial",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_initial",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_initial",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "snapshot_error_initial",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "snapshot_error_initial",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "missing_release",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "missing_release",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_release",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_release",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "snapshot_error_release",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "snapshot_error_release",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_then_recovery",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "field_error_then_recovery",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "initial_error_then_recovery",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "initial_error_then_recovery",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "execution_field_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "execution_field_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "execution_snapshot_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "execution_snapshot_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_below",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_below",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_equal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_equal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_above",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "age_above",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "humidity_equal",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "humidity_equal",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "humidity_above",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "humidity_above",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "fan_field_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "fan_field_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "both_fields_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "both_fields_error",
+      "old_applied": false,
+      "old_completed": false,
+      "target": "fan"
+    },
+    {
+      "agreed": true,
+      "case_id": "temperature_drops",
+      "old_applied": false,
+      "old_completed": true,
+      "target": "cooling"
+    },
+    {
+      "agreed": true,
+      "case_id": "temperature_drops",
+      "old_applied": true,
+      "old_completed": true,
+      "target": "fan"
+    }
+  ],
+  "metrics": {
+    "guarded": {
+      "A": 24,
+      "C": 24,
+      "F": 24,
+      "S": 24
+    },
+    "legacy": {
+      "A": 13,
+      "C": 11,
+      "F": 14,
+      "S": 11
+    }
+  },
+  "paired_counts": {
+    "A": {
+      "both_fail": 0,
+      "both_pass": 13,
+      "fail_to_pass": 11,
+      "pass_to_fail": 0
+    },
+    "C": {
+      "both_fail": 0,
+      "both_pass": 11,
+      "fail_to_pass": 13,
+      "pass_to_fail": 0
+    },
+    "F": {
+      "both_fail": 0,
+      "both_pass": 14,
+      "fail_to_pass": 10,
+      "pass_to_fail": 0
+    },
+    "S": {
+      "both_fail": 0,
+      "both_pass": 11,
+      "fail_to_pass": 13,
+      "pass_to_fail": 0
+    }
+  },
+  "replay_equal": true
+}
