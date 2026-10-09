@@ -1,0 +1,239 @@
+{
+  "schema_version": "smartfarm-related-state-v2",
+  "registry_id": "thesis-state-revalidation-related-state-v2",
+  "claim_status": "not_run",
+  "artifact_role": "predeclared_experiment_input_fixture",
+  "fixture_notice": "이 파일의 수치와 판정 규칙은 실험 결과가 아니라 결정론적 실험 입력이다.",
+  "selection_rule": {
+    "source": "scenario_manifest_before_generation",
+    "must_not_depend_on": [
+      "generated_answer",
+      "generated_state_claims",
+      "baseline_condition",
+      "generated_answer_units"
+    ],
+    "canonical_order": "lexicographic_state_key",
+    "answer_unit_source": "dependency_profile_declaration"
+  },
+  "comparison_defaults": {
+    "missing_required_key": "relevant_change",
+    "unavailable_snapshot": "relevant_change",
+    "unknown_unit": "protocol_error",
+    "numeric_comparison": "absolute_delta_and_semantic_band",
+    "categorical_comparison": "exact"
+  },
+  "state_keys": [
+    {
+      "key": "sensor.zone-a.root_zone_temperature_c",
+      "kind": "numeric_sensor",
+      "unit": "degC",
+      "absolute_epsilon": 0.1,
+      "semantic_bands": [
+        {
+          "label": "within_fixture_range",
+          "upper_inclusive": 18.0
+        },
+        {
+          "label": "above_fixture_range",
+          "lower_exclusive": 18.0
+        }
+      ]
+    },
+    {
+      "key": "sensor.zone-a.relative_humidity_pct",
+      "kind": "numeric_sensor",
+      "unit": "percent",
+      "absolute_epsilon": 1.0,
+      "semantic_bands": [
+        {
+          "label": "within_fixture_range",
+          "upper_inclusive": 80.0
+        },
+        {
+          "label": "above_fixture_range",
+          "lower_exclusive": 80.0
+        }
+      ]
+    },
+    {
+      "key": "sensor.zone-a.air_temperature_c",
+      "kind": "numeric_sensor",
+      "unit": "degC",
+      "absolute_epsilon": 0.1,
+      "semantic_bands": [
+        {
+          "label": "within_fixture_range",
+          "upper_inclusive": 25.0
+        },
+        {
+          "label": "above_fixture_range",
+          "lower_exclusive": 25.0
+        }
+      ]
+    },
+    {
+      "key": "alert.zone-a.root_temperature_high.active",
+      "kind": "boolean_alert_state",
+      "comparison": "exact"
+    },
+    {
+      "key": "alert.zone-a.root_temperature_high.occurrence_id",
+      "kind": "alert_occurrence",
+      "comparison": "exact"
+    },
+    {
+      "key": "alert.zone-a.humidity_high.active",
+      "kind": "boolean_alert_state",
+      "comparison": "exact"
+    },
+    {
+      "key": "alert.zone-a.humidity_high.occurrence_id",
+      "kind": "alert_occurrence",
+      "comparison": "exact"
+    },
+    {
+      "key": "alert.zone-a.air_temperature_sensor_health.active",
+      "kind": "boolean_alert_state",
+      "comparison": "exact"
+    },
+    {
+      "key": "device.zone-a.root_zone_chiller.enabled",
+      "kind": "boolean_device_state",
+      "comparison": "exact"
+    },
+    {
+      "key": "device.zone-a.circulation_fan.percent",
+      "kind": "numeric_device_state",
+      "unit": "percent",
+      "absolute_epsilon": 0.0,
+      "minimum_meaningful_delta": 5.0
+    },
+    {
+      "key": "telemetry.farm.available",
+      "kind": "boolean_availability",
+      "comparison": "exact"
+    },
+    {
+      "key": "telemetry.farm.sample_age_seconds",
+      "kind": "numeric_freshness",
+      "unit": "seconds",
+      "absolute_epsilon": 0.0,
+      "semantic_bands": [
+        {
+          "label": "fresh",
+          "upper_inclusive": 120.0
+        },
+        {
+          "label": "stale",
+          "lower_exclusive": 120.0
+        }
+      ]
+    }
+  ],
+  "dependency_profiles": [
+    {
+      "profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "answer_units": [
+        {
+          "unit_id": "sensor_reading",
+          "depends_on": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        {
+          "unit_id": "alert_status",
+          "depends_on": [
+            "alert.zone-a.root_temperature_high.active",
+            "alert.zone-a.root_temperature_high.occurrence_id"
+          ]
+        },
+        {
+          "unit_id": "device_status",
+          "depends_on": [
+            "device.zone-a.root_zone_chiller.enabled"
+          ]
+        },
+        {
+          "unit_id": "data_quality",
+          "depends_on": [
+            "telemetry.farm.available",
+            "telemetry.farm.sample_age_seconds"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "humidity-fan-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.air_temperature_sensor_health.active",
+        "alert.zone-a.humidity_high.active",
+        "alert.zone-a.humidity_high.occurrence_id",
+        "device.zone-a.circulation_fan.percent",
+        "sensor.zone-a.relative_humidity_pct",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "answer_units": [
+        {
+          "unit_id": "sensor_reading",
+          "depends_on": [
+            "sensor.zone-a.relative_humidity_pct"
+          ]
+        },
+        {
+          "unit_id": "alert_status",
+          "depends_on": [
+            "alert.zone-a.air_temperature_sensor_health.active",
+            "alert.zone-a.humidity_high.active",
+            "alert.zone-a.humidity_high.occurrence_id"
+          ]
+        },
+        {
+          "unit_id": "device_status",
+          "depends_on": [
+            "device.zone-a.circulation_fan.percent"
+          ]
+        },
+        {
+          "unit_id": "data_quality",
+          "depends_on": [
+            "telemetry.farm.available",
+            "telemetry.farm.sample_age_seconds"
+          ]
+        }
+      ]
+    },
+    {
+      "profile_id": "root-zone-status-v1",
+      "required_state_keys": [
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "answer_units": [
+        {
+          "unit_id": "sensor_reading",
+          "depends_on": [
+            "sensor.zone-a.root_zone_temperature_c"
+          ]
+        },
+        {
+          "unit_id": "data_quality",
+          "depends_on": [
+            "telemetry.farm.available",
+            "telemetry.farm.sample_age_seconds"
+          ]
+        }
+      ]
+    }
+  ],
+  "derived_from": "thesis-state-revalidation-related-state-v1"
+}

@@ -1,0 +1,851 @@
+{
+  "schema_version": "smartfarm-state-revalidation-scenarios-v1",
+  "suite_id": "masters-thesis-state-revalidation-scenarios-v1",
+  "claim_status": "not_run",
+  "suite_status": "draft_fixture",
+  "artifact_role": "predeclared_experiment_input_fixture",
+  "fixture_notice": "모든 상태값, 임계값, 시드, 정답 상태와 행동 기회 표시는 실험 결과가 아니라 실험 전 입력 fixture다.",
+  "condition_ids": ["B0", "B1", "B2"],
+  "fixed_evidence_sets": [
+    {
+      "evidence_set_id": "root-zone-cooling-evidence-v1",
+      "frozen_across_conditions": true,
+      "source_ids": ["synthetic:thesis:root-zone-cooling-policy:v1"],
+      "fixture_facts": [
+        "이 실험 fixture에서는 근권 온도가 18.0 degC를 초과하고 관련 경보가 활성 상태이며 냉각기가 꺼진 경우에만 냉각 활성 후보를 허용한다.",
+        "실행 직전 상태가 후보의 전제조건과 다르면 해당 후보를 적용하지 않는다."
+      ]
+    },
+    {
+      "evidence_set_id": "humidity-fan-evidence-v1",
+      "frozen_across_conditions": true,
+      "source_ids": ["synthetic:thesis:humidity-fan-policy:v1"],
+      "fixture_facts": [
+        "이 실험 fixture에서는 상대습도가 80.0 percent를 초과하고 습도 경보가 활성 상태이며 센서 건강 경보가 없을 때 환기팬 80 percent 후보를 허용한다.",
+        "현재 팬 값과 경보 발생 식별자는 행동 후보의 상태 전제조건으로 기록한다."
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "S01-no-state-change",
+      "pair_id": "pair-S01",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "no_change",
+      "seed": 5101,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 10,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-10",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [],
+      "expected_change_class": "none",
+      "release_truth": {
+        "state_revision": 10,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-10",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {
+          "action": "set_cooling_enabled",
+          "target": "root_zone_chiller",
+          "value": true,
+          "bound_state_revision": 10
+        },
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-10"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {
+          "action": "set_cooling_enabled",
+          "target": "root_zone_chiller",
+          "value": true,
+          "bound_state_revision": 10
+        },
+        "valid_action_opportunity": true,
+        "invalid_action_opportunity": false
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S02-unrelated-sensor-change",
+      "pair_id": "pair-S02",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "unrelated_change",
+      "seed": 5102,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 20,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-20",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.air_temperature_c": 22.0,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S02-air-temperature",
+          "barrier": "during_initial_generation",
+          "state_revision": 21,
+          "patch": {"sensor.zone-a.air_temperature_c": 24.0}
+        }
+      ],
+      "expected_change_class": "unrelated",
+      "release_truth": {
+        "state_revision": 21,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-20",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 20},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-20"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 20},
+        "valid_action_opportunity": true,
+        "invalid_action_opportunity": false
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S03-related-sensor-noise",
+      "pair_id": "pair-S03",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "noise_within_tolerance",
+      "seed": 5103,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 30,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-30",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 18.2,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S03-root-noise",
+          "barrier": "during_initial_generation",
+          "state_revision": 31,
+          "patch": {"sensor.zone-a.root_zone_temperature_c": 18.25}
+        }
+      ],
+      "expected_change_class": "noise",
+      "release_truth": {
+        "state_revision": 31,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-30",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 18.25,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 30},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 30},
+        "valid_action_opportunity": true,
+        "invalid_action_opportunity": false
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S04-related-threshold-crossing",
+      "pair_id": "pair-S04",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "relevant_threshold_crossing",
+      "seed": 5104,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 40,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-40",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 18.8,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S04-root-threshold",
+          "barrier": "during_initial_generation",
+          "state_revision": 41,
+          "patch": {"sensor.zone-a.root_zone_temperature_c": 17.8}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 41,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-40",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 17.8,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 40},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": null,
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S05-alert-resolution",
+      "pair_id": "pair-S05",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "alert_resolution",
+      "seed": 5105,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 50,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-50",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.2,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S05-alert-resolved",
+          "barrier": "during_initial_generation",
+          "state_revision": 51,
+          "patch": {"alert.zone-a.root_temperature_high.active": false}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 51,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": false,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-50",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.2,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 50},
+        "execution_preconditions": [
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-50"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": null,
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S06-new-alert-occurrence",
+      "pair_id": "pair-S06",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "new_alert_occurrence",
+      "seed": 5106,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 60,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-60a",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.4,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S06-new-occurrence",
+          "barrier": "during_initial_generation",
+          "state_revision": 61,
+          "patch": {"alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-60b"}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 61,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-60b",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.4,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 60},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-60b"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 61},
+        "valid_action_opportunity": true,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S07-device-prechange",
+      "pair_id": "pair-S07",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "device_prechange",
+      "seed": 5107,
+      "question": "1구역 습도 경보를 확인하고 환기팬 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "humidity-fan-evidence-v1",
+      "dependency_profile_id": "humidity-fan-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.air_temperature_sensor_health.active",
+        "alert.zone-a.humidity_high.active",
+        "alert.zone-a.humidity_high.occurrence_id",
+        "device.zone-a.circulation_fan.percent",
+        "sensor.zone-a.relative_humidity_pct",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 70,
+        "facts": {
+          "alert.zone-a.air_temperature_sensor_health.active": false,
+          "alert.zone-a.humidity_high.active": true,
+          "alert.zone-a.humidity_high.occurrence_id": "humidity-high-occ-70",
+          "device.zone-a.circulation_fan.percent": 20.0,
+          "sensor.zone-a.relative_humidity_pct": 88.0,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S07-fan-prechange",
+          "barrier": "during_initial_generation",
+          "state_revision": 71,
+          "patch": {"device.zone-a.circulation_fan.percent": 40.0}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 71,
+        "facts": {
+          "alert.zone-a.air_temperature_sensor_health.active": false,
+          "alert.zone-a.humidity_high.active": true,
+          "alert.zone-a.humidity_high.occurrence_id": "humidity-high-occ-70",
+          "device.zone-a.circulation_fan.percent": 40.0,
+          "sensor.zone-a.relative_humidity_pct": 88.0,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_circulation_fan_percent", "target": "circulation_fan", "value": 80.0, "bound_state_revision": 70},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.relative_humidity_pct", "operator": "gt", "expected": 80.0},
+          {"state_key": "alert.zone-a.humidity_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.air_temperature_sensor_health.active", "operator": "eq", "expected": false},
+          {"state_key": "device.zone-a.circulation_fan.percent", "operator": "eq", "expected": 40.0}
+        ],
+        "expected_release_candidate": {"action": "set_circulation_fan_percent", "target": "circulation_fan", "value": 80.0, "bound_state_revision": 71},
+        "valid_action_opportunity": true,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S08-conflicting-alert",
+      "pair_id": "pair-S08",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "conflicting_alert",
+      "seed": 5108,
+      "question": "1구역 습도 경보를 확인하고 환기팬 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "humidity-fan-evidence-v1",
+      "dependency_profile_id": "humidity-fan-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.air_temperature_sensor_health.active",
+        "alert.zone-a.humidity_high.active",
+        "alert.zone-a.humidity_high.occurrence_id",
+        "device.zone-a.circulation_fan.percent",
+        "sensor.zone-a.relative_humidity_pct",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 80,
+        "facts": {
+          "alert.zone-a.air_temperature_sensor_health.active": false,
+          "alert.zone-a.humidity_high.active": true,
+          "alert.zone-a.humidity_high.occurrence_id": "humidity-high-occ-80",
+          "device.zone-a.circulation_fan.percent": 20.0,
+          "sensor.zone-a.relative_humidity_pct": 88.0,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S08-sensor-health-alert",
+          "barrier": "during_initial_generation",
+          "state_revision": 81,
+          "patch": {"alert.zone-a.air_temperature_sensor_health.active": true}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 81,
+        "facts": {
+          "alert.zone-a.air_temperature_sensor_health.active": true,
+          "alert.zone-a.humidity_high.active": true,
+          "alert.zone-a.humidity_high.occurrence_id": "humidity-high-occ-80",
+          "device.zone-a.circulation_fan.percent": 20.0,
+          "sensor.zone-a.relative_humidity_pct": 88.0,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_circulation_fan_percent", "target": "circulation_fan", "value": 80.0, "bound_state_revision": 80},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.relative_humidity_pct", "operator": "gt", "expected": 80.0},
+          {"state_key": "alert.zone-a.humidity_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.air_temperature_sensor_health.active", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": null,
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S09-second-change-during-refresh",
+      "pair_id": "pair-S09",
+      "claim_status": "not_run",
+      "comparison_scope": "B2_safety_diagnostic",
+      "category": "second_change_during_refresh",
+      "seed": 5109,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 90,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-90a",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.6,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S09-first-occurrence",
+          "barrier": "during_initial_generation",
+          "state_revision": 91,
+          "patch": {"alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-90b"}
+        },
+        {
+          "injection_id": "inj-S09-second-resolution",
+          "barrier": "during_refresh_generation",
+          "state_revision": 92,
+          "patch": {
+            "alert.zone-a.root_temperature_high.active": false,
+            "sensor.zone-a.root_zone_temperature_c": 17.6
+          }
+        }
+      ],
+      "expected_change_class": "relevant_second_change",
+      "release_truth": {
+        "state_revision": 92,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": false,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-90b",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 17.6,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 90},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": null,
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present",
+      "expected_B2_bound": {"maximum_generation_calls": 2, "action_must_be_absent": true}
+    },
+    {
+      "scenario_id": "S10-stale-state-at-recheck",
+      "pair_id": "pair-S10",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "stale_state",
+      "seed": 5110,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 100,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-100",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S10-telemetry-stale",
+          "barrier": "during_initial_generation",
+          "state_revision": 101,
+          "patch": {"telemetry.farm.sample_age_seconds": 300.0}
+        }
+      ],
+      "expected_change_class": "relevant",
+      "release_truth": {
+        "state_revision": 101,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-100",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.5,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 300.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 100},
+        "execution_preconditions": [
+          {"state_key": "telemetry.farm.available", "operator": "eq", "expected": true},
+          {"state_key": "telemetry.farm.sample_age_seconds", "operator": "le", "expected": 120.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": null,
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S11-change-before-execution-check",
+      "pair_id": "pair-S11",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "change_before_execution_check",
+      "seed": 5111,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 110,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-110",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.3,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S11-resolution-before-check",
+          "barrier": "approval_event",
+          "state_revision": 111,
+          "patch": {
+            "alert.zone-a.root_temperature_high.active": false,
+            "sensor.zone-a.root_zone_temperature_c": 17.7
+          }
+        }
+      ],
+      "expected_change_class": "execution_time_change",
+      "release_truth": {
+        "state_revision": 110,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-110",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.3,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "execution_truth": {
+        "state_revision": 111,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": false,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-110",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 17.7,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 110},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-110"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 110},
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    },
+    {
+      "scenario_id": "S12-change-at-action-apply",
+      "pair_id": "pair-S12",
+      "claim_status": "not_run",
+      "comparison_scope": "paired_primary",
+      "category": "change_at_action_apply",
+      "seed": 5112,
+      "question": "1구역 근권 온도 경보를 확인하고 필요한 냉각 조정을 제안해줘.",
+      "intent": "control_request",
+      "zone_id": "zone-a",
+      "fixed_evidence_set_id": "root-zone-cooling-evidence-v1",
+      "dependency_profile_id": "root-zone-cooling-control-v1",
+      "required_state_keys": [
+        "alert.zone-a.root_temperature_high.active",
+        "alert.zone-a.root_temperature_high.occurrence_id",
+        "device.zone-a.root_zone_chiller.enabled",
+        "sensor.zone-a.root_zone_temperature_c",
+        "telemetry.farm.available",
+        "telemetry.farm.sample_age_seconds"
+      ],
+      "initial_state": {
+        "state_revision": 120,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-120",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.1,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "injections": [
+        {
+          "injection_id": "inj-S12-device-changed-at-apply",
+          "barrier": "action_apply",
+          "state_revision": 121,
+          "patch": {"device.zone-a.root_zone_chiller.enabled": true}
+        }
+      ],
+      "expected_change_class": "action_apply_boundary_change",
+      "release_truth": {
+        "state_revision": 120,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-120",
+          "device.zone-a.root_zone_chiller.enabled": false,
+          "sensor.zone-a.root_zone_temperature_c": 19.1,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "execution_truth": {
+        "state_revision": 121,
+        "facts": {
+          "alert.zone-a.root_temperature_high.active": true,
+          "alert.zone-a.root_temperature_high.occurrence_id": "root-high-occ-120",
+          "device.zone-a.root_zone_chiller.enabled": true,
+          "sensor.zone-a.root_zone_temperature_c": 19.1,
+          "telemetry.farm.available": true,
+          "telemetry.farm.sample_age_seconds": 10.0
+        }
+      },
+      "action_contract": {
+        "initial_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 120},
+        "execution_preconditions": [
+          {"state_key": "sensor.zone-a.root_zone_temperature_c", "operator": "gt", "expected": 18.0},
+          {"state_key": "alert.zone-a.root_temperature_high.active", "operator": "eq", "expected": true},
+          {"state_key": "alert.zone-a.root_temperature_high.occurrence_id", "operator": "eq", "expected": "root-high-occ-120"},
+          {"state_key": "device.zone-a.root_zone_chiller.enabled", "operator": "eq", "expected": false}
+        ],
+        "expected_release_candidate": {"action": "set_cooling_enabled", "target": "root_zone_chiller", "value": true, "bound_state_revision": 120},
+        "valid_action_opportunity": false,
+        "invalid_action_opportunity": true
+      },
+      "approval_event": "approve_if_candidate_is_present"
+    }
+  ]
+}

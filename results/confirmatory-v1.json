@@ -1,0 +1,184 @@
+{
+  "schema_version": "smartfarm-state-revalidation-result-index-v1",
+  "result_id": "confirmatory-v1",
+  "claim_status": "claim_candidate",
+  "evidence_scope": "controlled_simulated_scenario_suite_only",
+  "run": {
+    "run_id": "confirmatory-20260807-e84d7c2",
+    "run_started_at": "2026-08-07T08:28:39+00:00",
+    "repository_commit": "e84d7c23f4392fce804f4c9eb14bc4133bff3595",
+    "branch": "main",
+    "runtime": {
+      "python": "3.14.4",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "package": "smartfarm-state-revalidation-0.1.0"
+    },
+    "scenario_count": 120,
+    "primary_scenario_count": 110,
+    "diagnostic_scenario_count": 10,
+    "episode_result_count": 340,
+    "bootstrap_seed": 20260807,
+    "bootstrap_resamples": 10000
+  },
+  "inputs": {
+    "protocol_sha256": "1991bbc576555847eeab6a311ff07a8c424e5bd312f691c38f96aec22f6032dd",
+    "scenario_sha256": "012e41470ab542fbdd35441258a9b4973f49531c6984c18cab9c4e1e1e74f1cc",
+    "related_state_sha256": "288b33ccede0f63f3622a1349998b070a3f8f971d707cc35f4c10443220c6b50",
+    "prompt_sha256": "0496bcd0b436188d3abc4dfe6f32486637fd7004846b5ab697add951c2ddf24f",
+    "observation_input_sha256": "b8e635a46eb50adc685aec90ff4e289717e5e897d4da276b60d5ddcf7b584f7f"
+  },
+  "integrity": {
+    "run_manifest_sha256": "494b97fb18d8d120e546e8c78b7ee8ccb538e25ca97b4e6d5195a5c83903f1a6",
+    "protocol_bundle_sha256": "7f8ded51cb84bfd24e0a42a3409dc3454ff21c41e2aa7f65fc16b92a1a604ae8",
+    "episodes_jsonl_sha256": "9454e4e251e08ca623ae05c347571005c484d292914c9dd328b39c604dd04a94",
+    "trace_jsonl_sha256": "3883fc30ee9ec3d899beeed0b8c5e27cb9d565892f8783990296172bb634212d",
+    "summary_sha256": "12206abf5f60ae56b0546642f4c8f893eb165b713d5a5d5d6f98e7f65d6f57a7",
+    "statistics_sha256": "bc90f71c6b28a95969868dd5d55eb34c1c5db47f59a8d7b466aece06a5504a36",
+    "claim_ledger_sha256": "c220ee6bad2049c99a289de0f615210b51d8c0dbb43ff6154c270ee71a279dbd",
+    "artifact_hash_verification": "ok",
+    "summary_reaggregation": "ok",
+    "statistics_reaggregation": "ok",
+    "protocol_error_count": 0,
+    "oracle_state_mismatch_count": 0
+  },
+  "primary_metrics": {
+    "B0": {
+      "response_state_consistency": {
+        "numerator": 50,
+        "denominator": 110,
+        "value": 0.45454545454545453,
+        "wilson_95": [0.3645991214526059, 0.5475594181199545]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 80,
+        "denominator": 80,
+        "value": 1.0,
+        "wilson_95": [0.954181870464473, 1.0]
+      },
+      "valid_action_retention": {
+        "numerator": 30,
+        "denominator": 50,
+        "value": 0.6,
+        "wilson_95": [0.46181437747589366, 0.7239161026974346]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": 0.058155079116972264
+      }
+    },
+    "B1": {
+      "response_state_consistency": {
+        "numerator": 50,
+        "denominator": 110,
+        "value": 0.45454545454545453,
+        "wilson_95": [0.3645991214526059, 0.5475594181199545]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 0,
+        "denominator": 80,
+        "value": 0.0,
+        "exact_one_sided_95_upper": 0.036754197779982345
+      },
+      "valid_action_retention": {
+        "numerator": 30,
+        "denominator": 50,
+        "value": 0.6,
+        "wilson_95": [0.46181437747589366, 0.7239161026974346]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": 0.058155079116972264
+      }
+    },
+    "B2": {
+      "response_state_consistency": {
+        "numerator": 110,
+        "denominator": 110,
+        "value": 1.0,
+        "wilson_95": [0.966256064701836, 1.0]
+      },
+      "invalid_action_execution_rate": {
+        "numerator": 0,
+        "denominator": 80,
+        "value": 0.0,
+        "exact_one_sided_95_upper": 0.036754197779982345
+      },
+      "valid_action_retention": {
+        "numerator": 50,
+        "denominator": 50,
+        "value": 1.0,
+        "wilson_95": [0.9286524008666414, 1.0]
+      },
+      "unnecessary_refresh_rate": {
+        "numerator": 0,
+        "denominator": 50,
+        "value": 0.0,
+        "exact_one_sided_95_upper": 0.058155079116972264
+      }
+    }
+  },
+  "diagnostic_metrics": {
+    "B2_second_change_bounded_termination_rate": {
+      "numerator": 10,
+      "denominator": 10,
+      "value": 1.0,
+      "wilson_95": [0.7224672001371109, 1.0]
+    }
+  },
+  "paired_effects": {
+    "B1_minus_B0_invalid_action_execution": {
+      "paired_count": 80,
+      "difference": -1.0,
+      "paired_bootstrap_95": [-1.0, -1.0],
+      "exact_mcnemar_p_two_sided": 1.6543612251060553e-24,
+      "higher_is_better": false
+    },
+    "B2_minus_B1_response_state_consistency": {
+      "paired_count": 110,
+      "difference": 0.5454545454545454,
+      "paired_bootstrap_95": [0.45454545454545453, 0.6363636363636364],
+      "exact_mcnemar_p_two_sided": 1.734723475976807e-18,
+      "higher_is_better": true
+    },
+    "B2_minus_B1_valid_action_retention": {
+      "paired_count": 50,
+      "difference": 0.4,
+      "paired_bootstrap_95": [0.26, 0.54],
+      "exact_mcnemar_p_two_sided": 1.9073486328125e-06,
+      "higher_is_better": true
+    }
+  },
+  "interpretation_ko": [
+    "B1은 상태가 바뀐 뒤 유효하지 않은 행동의 모의 실행을 차단했지만, 이미 생성된 응답을 갱신하지 않아 응답 일치율과 유효 행동 유지율은 B0와 같았다.",
+    "B2는 최대 한 번의 제한적 갱신으로 응답 일치율과 유효 행동 유지율을 높였고, B1과 같은 수준으로 유효하지 않은 행동의 모의 실행을 차단했다.",
+    "두 번째 상태 변화 10건에서는 모두 생성 호출을 두 번 이하로 제한하고 행동 후보를 제거한 채 종료했다."
+  ],
+  "not_claimed": [
+    "actual_llm_or_rag_natural_language_quality",
+    "response_latency",
+    "llm_calls_tokens_and_cost",
+    "real_farm_safety_or_productivity",
+    "physical_device_effect",
+    "population_level_generalization"
+  ],
+  "required_caveats": [
+    "결과는 사전 구성한 결정론적 모의 시나리오와 dry-run 실행기에 한정된다.",
+    "0건은 완전한 안전을 뜻하지 않으며, 유효하지 않은 행동 실행률 0/80의 단측 정확 95% 상한은 약 3.68%이다.",
+    "신뢰구간과 검정값은 이 시나리오 세트의 쌍대 비교를 요약하며 실제 농장 요청 모집단으로 일반화하지 않는다."
+  ],
+  "preclaim_audit_disclosure": {
+    "prior_nonclaim_execution_observed": true,
+    "details": "프로토콜 동결 뒤 b20d1f5에서 자동 감사 과정이 claim_status=not_claimed로 확정 입력을 임시 실행했다. 임시 artifact는 보존되지 않았다. 이후 시나리오 값·표본·oracle·실행 알고리즘은 변경하지 않고 운영체제 독립 해시 직렬화와 지표 식별자 정렬만 수정했다.",
+    "interpretation_limit": "공식 실행은 동결 코드와 입력의 재현 가능한 claim-candidate 실행이지만 외부 블라인드 held-out 평가로 표현하지 않는다."
+  },
+  "superseded_runs": [
+    {
+      "run_id": "confirmatory-20260807-81a521a",
+      "reason": "동결 프로토콜의 두 표시용 지표 ID와 claim ledger ID를 문자 단위로 정렬하기 전 실행이므로 최종 근거에서 제외했다. 지표 정의와 결과 수치는 변경되지 않았다."
+    }
+  ]
+}

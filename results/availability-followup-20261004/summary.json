@@ -1,0 +1,115 @@
+{
+  "completed_at": "2026-10-04T12:29:41.749408+00:00",
+  "conditions": [
+    {
+      "N": 10,
+      "condition": "normal",
+      "engine_runs": 20,
+      "exceptions": 0,
+      "label": "온도 정상 조회",
+      "metrics": {
+        "A": {
+          "passed": 10,
+          "percent": 100.0
+        },
+        "C": {
+          "passed": 10,
+          "percent": 100.0
+        },
+        "F": {
+          "passed": 10,
+          "percent": 100.0
+        },
+        "S": {
+          "passed": 10,
+          "percent": 100.0
+        }
+      },
+      "primary": true
+    },
+    {
+      "N": 10,
+      "condition": "persistent_missing",
+      "engine_runs": 20,
+      "exceptions": 0,
+      "label": "처음부터 온도 값 없음",
+      "metrics": {
+        "A": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "C": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "F": {
+          "passed": 10,
+          "percent": 100.0
+        },
+        "S": {
+          "passed": 0,
+          "percent": 0.0
+        }
+      },
+      "primary": true
+    },
+    {
+      "N": 10,
+      "condition": "temperature_read_error",
+      "engine_runs": 20,
+      "exceptions": 10,
+      "label": "온도 재조회 오류",
+      "metrics": {
+        "A": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "C": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "F": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "S": {
+          "passed": 0,
+          "percent": 0.0
+        }
+      },
+      "primary": true
+    },
+    {
+      "N": 10,
+      "condition": "whole_snapshot_error",
+      "engine_runs": 20,
+      "exceptions": 10,
+      "label": "전체 상태 재조회 오류",
+      "metrics": {
+        "A": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "C": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "F": {
+          "passed": 0,
+          "percent": 0.0
+        },
+        "S": {
+          "passed": 0,
+          "percent": 0.0
+        }
+      },
+      "primary": false
+    }
+  ],
+  "replay_equal": [
+    true,
+    true,
+    true
+  ],
+  "source_and_frozen_artifacts_unchanged": true
+}
